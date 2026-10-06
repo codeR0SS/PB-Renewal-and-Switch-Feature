@@ -13,7 +13,7 @@ import { StickyFooter } from '@/components/StickyFooter';
 import { TIMEOUT_MS } from '@/lib/check';
 import { carryoverContent, type Tone } from '@/lib/carryover';
 import { useFlow, useSelectedAlt } from '@/store/flow';
-import { colors, fontSize, MIN_TOUCH, radius } from '@/theme';
+import { colors, fontSize, radius } from '@/theme';
 
 const BADGE: Record<Tone, { bg: string; fg: string; icon?: 'check' | 'alert' }> = {
   neutral: { bg: '#C6FFDD', fg: colors.green, icon: 'check' },
@@ -71,7 +71,12 @@ export default function Carryover() {
                 <Text style={[styles.sub, { marginBottom: 0, flexShrink: 1 }]}>
                   Switching to <Text style={styles.altName}>{alt.name}</Text> {'—'} not this one?
                 </Text>
-                <Touchable accessibilityRole="link" onPress={() => router.navigate('/whats-different')} style={styles.changeBtn}>
+                <Touchable
+                  accessibilityRole="link"
+                  onPress={() => router.navigate('/whats-different')}
+                  hitSlop={{ top: 14, bottom: 14, left: 8, right: 8 }}
+                  style={styles.changeBtn}
+                >
                   <Text style={styles.change}>Change it</Text>
                 </Touchable>
               </View>
@@ -108,8 +113,6 @@ export default function Carryover() {
                 ))}
               </View>
             )}
-
-            <Text style={styles.sample}>Sample figures for this prototype.</Text>
           </ScrollView>
           <StickyFooter>
             <PrimaryButton label={'Continue to confirm →'} onPress={() => router.push('/confirm')} />
@@ -126,15 +129,16 @@ const styles = StyleSheet.create({
   title: { fontFamily: 'Merriweather_700Bold', fontSize: fontSize.xl, lineHeight: 30, color: colors.ink, marginBottom: 4 },
   sub: { fontSize: fontSize.sm, color: colors.body, marginBottom: 4, lineHeight: 20 },
   altName: { fontWeight: '500', color: colors.ink },
-  altRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: 8, marginBottom: 8 },
-  changeBtn: { minHeight: MIN_TOUCH, justifyContent: 'center' },
+  altRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: 8, rowGap: 4, marginBottom: 8 },
+  // Hit area meets the 44×48dp minimum via hitSlop instead of minHeight, so the visible text
+  // keeps the row's own tight spacing instead of sitting in a 48px-tall centered box.
+  changeBtn: {},
   change: { fontSize: fontSize.sm, fontWeight: '500', color: colors.brandBlue },
   row: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, borderWidth: 1, borderColor: colors.line2, borderRadius: radius.lg, padding: 16, marginBottom: 10 },
   rowTitle: { fontSize: fontSize.sm, fontWeight: '700', color: colors.ink },
   rowDetail: { fontSize: fontSize.xs, color: colors.body, marginTop: 4, lineHeight: 18 },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: radius.pill, paddingLeft: 8, paddingRight: 10, paddingVertical: 4, flexShrink: 0 },
   badgeText: { fontSize: fontSize.xs, fontWeight: '700' },
-  sample: { fontSize: fontSize.xs, color: colors.muted, marginTop: 12 },
   next: { marginTop: 20 },
   nextTitle: { fontSize: fontSize.lg, fontWeight: '500', color: colors.ink },
   nextRow: { flexDirection: 'row', gap: 12, alignItems: 'flex-start', marginTop: 14 },

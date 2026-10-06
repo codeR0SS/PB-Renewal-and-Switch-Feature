@@ -1,8 +1,30 @@
+import { useEffect, useState } from 'react';
 import { Defs, Ellipse, LinearGradient, Path, RadialGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 /** Small line/fill icons transcribed from the Design canvas exports (Home, Intro, Loading). */
 
 type IconProps = { size?: number; color?: string };
+
+/** A slow, staggered opacity twinkle, driven by requestAnimationFrame rather than RN's Animated:
+ * Animated.createAnimatedComponent adds a `collapsable` prop meant for native view-flattening,
+ * which react-native-web forwards straight to the DOM as an invalid attribute. A plain numeric
+ * prop sidesteps that entirely and costs nothing for one small, slow-moving illustration. */
+function useTwinkle(phaseOffsetMs: number) {
+  const [opacity, setOpacity] = useState(0.3);
+  useEffect(() => {
+    const periodMs = 2800;
+    const start = Date.now() - phaseOffsetMs;
+    let raf: ReturnType<typeof requestAnimationFrame>;
+    const tick = () => {
+      const wave = (Math.sin(((Date.now() - start) / periodMs) * Math.PI * 2 - Math.PI / 2) + 1) / 2;
+      setOpacity(0.3 + wave * 0.7);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [phaseOffsetMs]);
+  return opacity;
+}
 
 export function IconClose({ size = 18, color = '#253858' }: IconProps) {
   return (
@@ -83,6 +105,18 @@ export function IconShieldCheck({ size = 50, color = '#253858' }: IconProps) {
   );
 }
 
+// Small single-color version of IconShieldCheck's glyph, sized for the brand-blue
+// header chip (ScreenHeader) so the Renewal Check mark reads the same there as it
+// does on the intro hero icon.
+export function IconRenewalMark({ size = 13, color = '#FFFFFF' }: IconProps) {
+  return (
+    <Svg width={size} height={size * 54 / 50} viewBox="3 1 26 30" fill="none" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M16 3.5 6 7v8.5c0 6 4.2 10.2 10 13 5.8-2.8 10-7 10-13V7L16 3.5Z" />
+      <Path d="M11 15.5l3.5 3.5 6.5-7" strokeWidth={2.8} />
+    </Svg>
+  );
+}
+
 export function IconDocument({ size = 22, color = '#253858' }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -98,6 +132,17 @@ export function IconDecide({ size = 22, color = '#253858' }: IconProps) {
       <Path d="M12 21v-8" />
       <Path d="M12 13 6 7M12 13l6-6" />
       <Path d="M3 9l3-2-2 3M21 9l-3-2 2 3" />
+    </Svg>
+  );
+}
+
+export function IconSwitch({ size = 22, color = '#0065FF' }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M17 3.5 20.5 7 17 10.5" />
+      <Path d="M3.5 11V9a4 4 0 0 1 4-4h13" />
+      <Path d="M7 20.5 3.5 17 7 13.5" />
+      <Path d="M20.5 13v2a4 4 0 0 1-4 4h-13" />
     </Svg>
   );
 }
@@ -299,6 +344,8 @@ export function IconSavings({ size = 36 }: IconProps) {
 /** Home hero gift-box illustration (static; the canvas version floats/twinkles). */
 export function GiftBoxIllustration({ size = 120 }: { size?: number }) {
   const h = size * 100 / 120;
+  const star1 = useTwinkle(0);
+  const star2 = useTwinkle(700);
   return (
     <Svg width={size} height={h} viewBox="0 0 120 100">
       <Defs>
@@ -329,8 +376,8 @@ export function GiftBoxIllustration({ size = 120 }: { size?: number }) {
       <Path d="M79.9 42.5 L70.8 41.1 L79.8 33.3Z" fill="url(#arG)" />
       <Path d="M40.1 61.5 L49.2 62.9 L40.2 70.7Z" fill="url(#arG)" />
       <Path d="M52 52 L58 58 L69 45" fill="none" stroke="#fff" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
-      <Path d="M104 8l1.8 4.2L110 14l-4.2 1.8L104 20l-1.8-4.2L98 14l4.2-1.8Z" fill="#FFE48A" />
-      <Path d="M12 30l1.2 2.8L16 34l-2.8 1.2L12 38l-1.2-2.8L8 34l2.8-1.2Z" fill="#fff" />
+      <Path d="M104 8l1.8 4.2L110 14l-4.2 1.8L104 20l-1.8-4.2L98 14l4.2-1.8Z" fill="#FFE48A" opacity={star1} />
+      <Path d="M12 30l1.2 2.8L16 34l-2.8 1.2L12 38l-1.2-2.8L8 34l2.8-1.2Z" fill="#fff" opacity={star2} />
     </Svg>
   );
 }

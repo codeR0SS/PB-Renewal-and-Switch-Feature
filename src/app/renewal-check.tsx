@@ -23,7 +23,7 @@ import { colors, fontSize, radius } from '@/theme';
 
 const INTRO_STEPS = [
   { icon: <IconDocument />, title: 'Uses public insurer data', detail: 'Not just our own word' },
-  { icon: <IconClockLine color={colors.ink} />, title: 'Takes a few seconds', detail: 'Your renewal, checked while you wait' },
+  { icon: <IconClockLine size={22} color={colors.ink} />, title: 'Takes a few seconds', detail: 'Your renewal, checked while you wait' },
   { icon: <IconDecide />, title: 'You decide what to do', detail: 'Switch or stay, either way' },
 ];
 

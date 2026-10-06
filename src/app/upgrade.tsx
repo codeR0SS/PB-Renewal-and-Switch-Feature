@@ -52,7 +52,7 @@ export default function Upgrade() {
         </View>
 
         <View style={styles.paid}>
-          <IconAlertCircle />
+          <IconAlertCircle size={16} />
           <Text style={styles.paidText}>This is a paid upgrade. PolicyBazaar earns commission on it {'—'} unlike the switch check itself.</Text>
         </View>
 

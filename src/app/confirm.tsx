@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Touchable } from '@/components/Touchable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { IconAlertCircle } from '@/components/icons';
+import { IconAlertCircle, IconEnvelope } from '@/components/icons';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { RiderSheet } from '@/components/RiderSheet';
 import { ScreenHeader } from '@/components/ScreenHeader';
@@ -57,7 +57,7 @@ export default function Confirm() {
               )}
               {switching && (
                 <View style={styles.hospitalNotice}>
-                  <IconAlertCircle />
+                  <IconAlertCircle size={16} />
                   <Text style={styles.hospitalNoticeText}>
                     {alt.overlapCovered !== undefined
                       ? 'Hospital network changes slightly — reviewed on the previous screen.'
@@ -111,16 +111,22 @@ export default function Confirm() {
 
           <StickyFooter>
             {/* Compact on purpose: the footer is always on screen, so every line here costs the term picker space. */}
-            <Text style={styles.delivery}>
-              Documents, invoice, and your declaration will be sent to{' '}
-              <Text style={styles.deliveryValue}>rohit@{'•••••'}.com {'·'} +91 98{'•••'} 4021</Text>. Wrong details?{' '}
-              <Text style={styles.deliveryLink}>Update in Account Settings {'→'}</Text>
-            </Text>
             {riderIds.length > 0 && (
-              <Text style={styles.breakdown}>
-                {riderIds.length} rider{riderIds.length === 1 ? '' : 's'} {riderIds.map((id) => getRider(id).name).join(', ')} (+{formatRupees(ridersTotal(riderIds, term))})
-              </Text>
+              <View style={styles.breakdownRow}>
+                <Text style={styles.breakdownLabel} numberOfLines={1}>
+                  {riderIds.length} rider{riderIds.length === 1 ? '' : 's'} {'·'} {riderIds.map((id) => getRider(id).name).join(', ')}
+                </Text>
+                <Text style={styles.breakdownValue}>+{formatRupees(ridersTotal(riderIds, term))}</Text>
+              </View>
             )}
+            <View style={styles.deliveryBox}>
+              <IconEnvelope size={14} />
+              <Text style={styles.delivery}>
+                Documents, invoice, and your declaration will be sent to{' '}
+                <Text style={styles.deliveryValue}>rohit@{'•••••'}.com {'·'} +91 98{'•••'} 4021</Text>. Wrong details?{' '}
+                <Text style={styles.deliveryLink}>Update in Account Settings {'→'}</Text>
+              </Text>
+            </View>
             <PrimaryButton
               label={`${verb} at ${formatRupees(total)}${term === 3 ? ' (3 years)' : ''}`}
               onPress={() => router.push('/payment')}
@@ -175,8 +181,15 @@ const styles = StyleSheet.create({
   otherLinkText: { fontSize: fontSize.sm, fontWeight: '500', color: colors.brandBlue },
   upgradeLink: { minHeight: MIN_TOUCH, alignItems: 'center', justifyContent: 'center', marginBottom: 16, borderRadius: 8, backgroundColor: colors.amberBg, borderWidth: 1, borderColor: colors.warningBorder, paddingHorizontal: 12 },
   upgradeText: { fontSize: fontSize.sm, fontWeight: '500', color: colors.ink, textAlign: 'center' },
-  delivery: { fontSize: fontSize.xs, color: colors.body, lineHeight: 18, marginBottom: 4, textAlign: 'center' },
+  // A contact/account fact, not a price line — gets its own quiet card (like a checkout's
+  // "purchase protected" notice) instead of blending into the price breakdown above it.
+  deliveryBox: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: colors.band, borderRadius: radius.md, padding: 10 },
+  delivery: { flex: 1, fontSize: fontSize.xs, color: colors.body, lineHeight: 18 },
   deliveryValue: { fontWeight: '500', color: colors.ink },
   deliveryLink: { fontWeight: '500', color: colors.brandBlue },
-  breakdown: { fontSize: fontSize.xs, color: colors.body, textAlign: 'center', marginBottom: 4 },
+  // A real line item (label left, price right) instead of one run-on sentence — same
+  // lineRow/lineLabel/lineValue shape payment.tsx already uses for this exact breakdown.
+  breakdownRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 },
+  breakdownLabel: { flex: 1, fontSize: fontSize.xs, color: colors.body },
+  breakdownValue: { fontSize: fontSize.xs, fontWeight: '700', color: colors.ink },
 });

@@ -60,9 +60,6 @@ export default function Payment() {
         <View style={styles.center}>
           <Spinner />
           <Text style={styles.centerText}>Processing your payment.</Text>
-          <Text style={styles.fine}>
-            The processing step is simulated for this prototype {'—'} the real payment hands off to PolicyBazaar's existing payment flow, out of scope for this brief.
-          </Text>
         </View>
       </SafeAreaView>
     );
@@ -198,7 +195,6 @@ const styles = StyleSheet.create({
   body: { padding: 16, gap: 12, flexGrow: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 16 },
   centerText: { fontSize: fontSize.sm, color: colors.body },
-  fine: { fontSize: fontSize.xs, color: colors.muted, textAlign: 'center', lineHeight: 18, marginTop: 8 },
   title: { fontFamily: 'Merriweather_700Bold', fontSize: fontSize.xl, lineHeight: 30, color: colors.ink, marginBottom: 16 },
   errorBox: { borderWidth: 1, borderColor: colors.red + '40', backgroundColor: colors.red + '1A', borderRadius: radius.md, padding: 16, marginBottom: 24 },
   errorTitle: { fontSize: fontSize.sm, fontWeight: '600', color: colors.red, marginBottom: 4 },
