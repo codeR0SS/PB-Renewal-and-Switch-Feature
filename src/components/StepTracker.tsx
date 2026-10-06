@@ -21,8 +21,10 @@ export function StepTracker({ withCompare, current }: { withCompare: boolean; cu
 
   return (
     <View style={styles.row}>
-      <View style={styles.track} />
-      {currentIdx > 0 && <View style={[styles.progress, { width: `${progressPct}%` }]} />}
+      <View style={styles.trackWrap}>
+        <View style={styles.track} />
+        {currentIdx > 0 && <View style={[styles.progress, { width: `${progressPct}%` }]} />}
+      </View>
       {steps.map((key, i) => {
         const done = i < currentIdx;
         const active = i === currentIdx;
@@ -42,8 +44,11 @@ export function StepTracker({ withCompare, current }: { withCompare: boolean; cu
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 14, backgroundColor: colors.white, borderBottomWidth: 1, borderBottomColor: colors.line },
-  track: { position: 'absolute', top: 25.5, left: 30, right: 30, height: 1, backgroundColor: PENDING_BORDER },
-  progress: { position: 'absolute', top: 25.5, left: 30, height: 1, backgroundColor: colors.brandBlue },
+  // Percentage widths below resolve against this wrapper's span (dot-center to dot-center),
+  // not the full row — otherwise the fill overshoots past the active step's dot.
+  trackWrap: { position: 'absolute', top: 25.5, left: 30, right: 30, height: 1 },
+  track: { position: 'absolute', left: 0, right: 0, top: 0, height: 1, backgroundColor: PENDING_BORDER },
+  progress: { position: 'absolute', left: 0, top: 0, height: 1, backgroundColor: colors.brandBlue },
   item: { alignItems: 'center', gap: 8 },
   dot: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: PENDING_BORDER, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' },
   dotOn: { borderColor: colors.brandBlue },

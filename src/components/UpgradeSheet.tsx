@@ -1,6 +1,6 @@
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { forwardRef } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { Touchable } from '@/components/Touchable';
 import { ComparisonTable } from '@/components/ComparisonTable';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -23,14 +23,10 @@ export const UpgradeSheet = forwardRef<BottomSheetModal, Props>(function Upgrade
   ref,
 ) {
   const close = () => (ref as React.RefObject<BottomSheetModal | null>).current?.dismiss();
-  const header = (
-    <View>
+  return (
+    <Sheet ref={ref}>
       <Text style={styles.kicker}>UPGRADE COMPARISON</Text>
       <Text accessibilityRole="header" style={styles.title}>Your pick vs. {offer.goldName}</Text>
-    </View>
-  );
-  return (
-    <Sheet ref={ref} header={header}>
       <ComparisonTable yoursLabel="Your pick" altLabel="Gold" hideYoursTag altAccent={colors.brandBlue} rows={[...rows, ...more]} />
       <Text style={styles.delta}>
         {formatRupees(UPGRADE_DELTA)}/yr more than your checked plan. Still a paid upgrade {'—'} PolicyBazaar earns commission on it.
@@ -45,7 +41,7 @@ export const UpgradeSheet = forwardRef<BottomSheetModal, Props>(function Upgrade
 
 const styles = StyleSheet.create({
   kicker: { fontSize: fontSize.xs, fontWeight: '500', color: colors.body, letterSpacing: 0.4, marginBottom: 4 },
-  title: { fontFamily: 'Merriweather_700Bold', fontSize: fontSize.lg, lineHeight: 26, color: colors.ink },
+  title: { fontFamily: 'Merriweather_700Bold', fontSize: fontSize.lg, lineHeight: 26, color: colors.ink, marginBottom: 16 },
   delta: { fontSize: fontSize.xs, color: colors.body, lineHeight: 18, marginTop: 12, marginBottom: 16 },
   confirm: { minHeight: MIN_TOUCH, alignItems: 'center', justifyContent: 'center', borderRadius: radius.md, backgroundColor: colors.brandBlue, paddingVertical: 12, marginBottom: 4 },
   confirmText: { color: colors.white, fontSize: fontSize.sm, fontWeight: '500' },

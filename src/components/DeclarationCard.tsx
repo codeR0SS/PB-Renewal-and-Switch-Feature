@@ -72,7 +72,7 @@ export function DeclarationIssued() {
       </View>
       {note && (
         <Text style={styles.noteText}>
-          Not wired up in this prototype {'—'} a real build would generate a PDF or shareable link here.
+          Sharing and downloads aren't available yet.
         </Text>
       )}
     </View>
