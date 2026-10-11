@@ -12,11 +12,13 @@ interface Props {
   onPressEvidence: () => void;
   /** 'compare' (two overlapping plan cards) for a Switch verdict; 'shield' otherwise. */
   illustration?: 'shield' | 'compare';
+  /** Optional content between the detail text and the evidence button (e.g. PremiumReveal). */
+  children?: ReactNode;
 }
 
 // Deliberately neutral — identical treatment for Stay, Switch and First renewal. Never colour this by
 // outcome; the ripple/badge/illustration chrome is purely decorative, not a status signal.
-export function VerdictCard({ headline, detail, onPressEvidence, illustration = 'shield' }: Props) {
+export function VerdictCard({ headline, detail, onPressEvidence, illustration = 'shield', children }: Props) {
   const compare = illustration === 'compare';
   return (
     <LinearGradient colors={['#0A2A6E', '#0B3FA8', '#0065FF']} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={styles.card}>
@@ -48,13 +50,12 @@ export function VerdictCard({ headline, detail, onPressEvidence, illustration = 
           <Circle cx={8} cy={50} r={2.2} fill="#FFFFFF" fillOpacity={0.45} />
         </Svg>
       ) : (
-        <Svg width={80} height={80} viewBox="0 0 88 88" style={styles.badgeBottomRight} pointerEvents="none">
-          <Circle cx={44} cy={44} r={40} fill="#FFFFFF" fillOpacity={0.08} stroke="#FFFFFF" strokeOpacity={0.22} />
-          <Circle cx={44} cy={44} r={28} fill="#FFFFFF" fillOpacity={0.1} />
-          <Path d="M44 24 L62 31 V45 C62 56 54 64 44 69 C34 64 26 56 26 45 V31 Z" fill="#06205A" fillOpacity={0.35} />
-          <Path d="M44 21 L62 28 V42 C62 53 54 61 44 66 C34 61 26 53 26 42 V28 Z" fill="#FFFFFF" />
-          <Path d="M36 43 L42 49 L53 37" stroke="#0065FF" strokeWidth={3.4} strokeLinecap="round" strokeLinejoin="round" />
-        </Svg>
+        <View style={styles.shieldChip}>
+          <Svg width={26} height={26} viewBox="0 0 28 28" fill="none">
+            <Path d="M14 3 L24 7 V13.5 C24 19.5 19.8 24.3 14 26.5 C8.2 24.3 4 19.5 4 13.5 V7 Z" fill="#FFFFFF" />
+            <Path d="M9.5 14 L12.5 17 L18.5 10.5" stroke="#0065FF" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
+          </Svg>
+        </View>
       )}
 
       <View style={styles.tag}>
@@ -63,6 +64,7 @@ export function VerdictCard({ headline, detail, onPressEvidence, illustration = 
       </View>
       <Text style={[styles.headline, compare && styles.headlineCompare]}>{headline}</Text>
       <Text style={styles.detail}>{detail}</Text>
+      {children}
       <Touchable accessibilityRole="button" onPress={onPressEvidence} style={styles.evidenceBtn}>
         <Text style={styles.evidenceText}>See how we checked this</Text>
         <IconArrowRight />
@@ -73,8 +75,12 @@ export function VerdictCard({ headline, detail, onPressEvidence, illustration = 
 
 const styles = StyleSheet.create({
   card: { borderRadius: radius.lg, padding: 22, paddingTop: 22, marginBottom: 12, overflow: 'hidden' },
-  ringsTopRight: { position: 'absolute', right: -96, top: -100 },
-  badgeBottomRight: { position: 'absolute', right: -24, bottom: -20 },
+  ringsTopRight: { position: 'absolute', right: -85, top: -86 },
+  shieldChip: {
+    position: 'absolute', top: 20, right: 20, width: 56, height: 56, borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.14)', alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#06205A', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.25, shadowRadius: 12, elevation: 4,
+  },
   compareTopRight: { position: 'absolute', right: 8, top: 9 },
   tag: { flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start', backgroundColor: '#C6FFDD', borderRadius: radius.pill, paddingVertical: 4, paddingLeft: 8, paddingRight: 10, marginBottom: 18 },
   tagText: { color: '#29764C', fontSize: fontSize.xs, fontWeight: '700' },
