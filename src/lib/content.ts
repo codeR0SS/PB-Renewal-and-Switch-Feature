@@ -4,6 +4,7 @@ export const POLICY = {
   planName: 'Young Star Silver Plan',
   renewsOn: '30 Sep 2026',
   premium: 6181,
+  lastYearPremium: 5718,
   cover: '₹5 Lakhs',
   insuredShort: 'Binay Sethi',
   insuredFull: 'Binay Kumar Sethi',

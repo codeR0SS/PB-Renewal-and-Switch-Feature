@@ -12,6 +12,8 @@ import { StepTracker } from '@/components/StepTracker';
 import { StickyFooter } from '@/components/StickyFooter';
 import { NoticeCard } from '@/components/NoticeCard';
 import { PlanSummaryCard } from '@/components/PlanSummaryCard';
+import { PremiumCompare } from '@/components/PremiumCompare';
+import { PremiumReveal } from '@/components/PremiumReveal';
 import { VerdictCard } from '@/components/VerdictCard';
 import { IconBack, IconDecide, IconDocument, IconPhone, IconShieldCheck, IconClock as IconClockLine } from '@/components/icons';
 import { FIRST_RENEWAL_COPY, noticeCopy, resolveOutcome, tooLateCopy } from '@/lib/outcome';
@@ -71,6 +73,8 @@ export default function RenewalCheck() {
     router.push(to);
   };
   const saving = POLICY.premium - recommended.premiumNum;
+  const premiumIncrease = POLICY.premium - POLICY.lastYearPremium;
+  const premiumIncreasePct = Math.round((premiumIncrease / POLICY.lastYearPremium) * 100);
   // One pure function decides what this screen shows. "Too late to switch" is not a demo toggle:
   // it fires from the real Home state (expiring today) whenever the result would point at switching.
   const outcome = resolveOutcome({ homeTiming, verdict, dataState: devDataState });
@@ -166,14 +170,18 @@ export default function RenewalCheck() {
                   </>
                 }
                 onPressEvidence={() => evidenceRef.current?.present()}
-              />
+              >
+                <PremiumReveal oldPrice={POLICY.premium} newPrice={recommended.premiumNum} />
+              </VerdictCard>
             )}
             {outcome === 'stay' && (
               <VerdictCard
                 headline="Your current plan still holds up."
-                detail="Premium up ₹463 (8%) from last year. Coverage and network unchanged."
+                detail={`Premium up ${formatRupees(premiumIncrease)} (${premiumIncreasePct}%) from last year. Coverage and network unchanged.`}
                 onPressEvidence={() => evidenceRef.current?.present()}
-              />
+              >
+                <PremiumCompare lastYear={POLICY.lastYearPremium} thisYear={POLICY.premium} />
+              </VerdictCard>
             )}
             {/* First renewal is a real, backed verdict that just can't show a % change: still "Checked". */}
             {outcome === 'first' && (
